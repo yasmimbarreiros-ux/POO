@@ -1,4 +1,4 @@
-package atv02_Janela;
+package atv02_JanelaComEvento;
 
 import javax.swing.*;
 

@@ -1,4 +1,4 @@
-package atv01_Janela;
+package atv01_janela;
 
 public class Main {
     public static void main(String[] args) {

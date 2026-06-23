@@ -1,4 +1,4 @@
-package atv04_InterfaceGrafica;
+package atv04_BorderLayout;
 
 public class Main {
     public static void main(String[] args) {
