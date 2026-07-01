@@ -86,8 +86,6 @@ public class TelaSensor extends JFrame {
 
 
     }
-
-
     private void salvarSensor() {
         String id = txtId.getText();
         String codigo = txtCodigo.getText();
@@ -119,7 +117,7 @@ public class TelaSensor extends JFrame {
             return;
         }
 
-        setVisible(true);
+
 
     }
 }
