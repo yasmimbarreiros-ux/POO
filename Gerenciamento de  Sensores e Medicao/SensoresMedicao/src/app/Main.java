@@ -1,9 +1,16 @@
 package app;
 
-import model.Sensor;
+import view.Menu;
+
+import javax.swing.SwingUtilities;
 
 public class Main {
+
     public static void main(String[] args) {
-        Sensor sensor1 = new Sensor();
+
+        SwingUtilities.invokeLater(() -> {
+            Menu menu = new Menu();
+            menu.setVisible(true);
+        });
     }
 }

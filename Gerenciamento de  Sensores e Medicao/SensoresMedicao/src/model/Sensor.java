@@ -1,16 +1,12 @@
 package model;
-
 public class Sensor {
     private int id;
-    private int codigo;
+    private String codigo;
     private String tipo;
     private String localizacao;
-
     public Sensor() {
-
     }
-
-    public Sensor(int id, int codigo, String tipo, String localizacao) {
+    public Sensor(int id, String  codigo, String tipo, String localizacao) {
         this.id = id;
         this.codigo = codigo;
         this.tipo = tipo;
@@ -23,10 +19,10 @@ public class Sensor {
     public void setId(int id) {
         this.id = id;
     }
-    public int getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
-    public void setCodigo(int codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
     public String getTipo() {
@@ -40,6 +36,10 @@ public class Sensor {
     }
     public void setLocalizacao(String localizacao) {
         this.localizacao = localizacao;
+    }
+    @Override
+    public String toString() {
+        return codigo + " - " + tipo + " - "; //para aparcer na tela medicao
     }
 
 }

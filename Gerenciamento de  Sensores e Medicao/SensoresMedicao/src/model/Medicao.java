@@ -2,15 +2,15 @@ package model;
 
 public class Medicao {
     private int id;
-    private int valor;
-    private int unidade;
+    private double valor;
+    private String unidade;
     private String dataHora;
+    private Sensor sensor;
 
     public Medicao() {
-
     }
 
-    public Medicao(int id, int valor, int unidade, String dataHora) {
+    public Medicao(int id, int valor, String unidade, String dataHora) {
         this.id = id;
         this.valor = valor;
         this.unidade  = unidade;
@@ -24,19 +24,19 @@ public class Medicao {
         this.id = id;
     }
 
-    public int getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(int valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 
-    public int getUnidade() {
+    public String getUnidade() {
         return unidade;
     }
 
-    public void setUnidade(int unidade) {
+    public void setUnidade(String unidade) {
         this.unidade = unidade;
     }
 
@@ -46,5 +46,16 @@ public class Medicao {
 
     public void setDataHora(String dataHora) {
         this.dataHora = dataHora;
+    }
+    public Sensor getSensor() {
+        return sensor;
+    }
+    public void setSensor(Sensor sensor) {
+        this.sensor = sensor;
+    }
+
+
+    public void setUnidade(int unidade) {
+        this.unidade = Integer.toString(unidade);
     }
 }

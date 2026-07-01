@@ -1,29 +1,33 @@
 package view;
 
+import controller.SensorController;
 import model.Sensor;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-
+import java.util.ArrayList;
 
 public class TelaSensor extends JFrame {
-
 
     private JTextField txtId;
     private JTextField txtCodigo;
     private JTextField txtTipo;
     private JTextField txtLocalizacao;
 
+    private JButton btnSalvar;
+    private JButton btnConsultar;
 
     private JTable tabela;
     private DefaultTableModel modeloTabela;
-    private JLabel lblTotal;
+
+    private SensorController sensorController = new SensorController();
 
     public TelaSensor() {
+
         setTitle("Gerenciamento de Sensores");
-        setSize(750, 650);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(950, 650);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
@@ -32,92 +36,103 @@ public class TelaSensor extends JFrame {
         add(titulo, BorderLayout.NORTH);
 
         JPanel painelPrincipal = new JPanel(new BorderLayout(10, 10));
-        painelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        painelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JPanel painelCampos = new JPanel(new GridLayout(7, 2, 10, 10));
-        painelCampos.setBorder(BorderFactory.createTitledBorder("Dados do sensor"));
+        JPanel painelCampos = new JPanel(new GridLayout(4, 2, 10, 10));
 
-
+        JLabel lblId = new JLabel("ID:");
+        JLabel lblCodigo = new JLabel("Código:");
+        JLabel lblTipo = new JLabel("Tipo:");
+        JLabel lblLocalizacao = new JLabel("Localização:");
 
         txtId = new JTextField();
         txtCodigo = new JTextField();
         txtTipo = new JTextField();
         txtLocalizacao = new JTextField();
 
-        painelCampos.add(new JLabel("ID:"));
+        txtId.setEditable(false);
+
+        painelCampos.add(lblId);
         painelCampos.add(txtId);
 
-        painelCampos.add(new JLabel("Codigo:"));
+        painelCampos.add(lblCodigo);
         painelCampos.add(txtCodigo);
 
-        painelCampos.add(new JLabel("Tipo:"));
+        painelCampos.add(lblTipo);
         painelCampos.add(txtTipo);
 
-        painelCampos.add(new JLabel("Localizacao:"));
+        painelCampos.add(lblLocalizacao);
         painelCampos.add(txtLocalizacao);
 
-        JButton btnSalvar = new JButton("Salvar");
-        JButton btnConsultar = new JButton("Consultar");
+        painelPrincipal.add(painelCampos, BorderLayout.NORTH);
 
+        JPanel painelBotoes = new JPanel(new FlowLayout());
 
+        btnSalvar = new JButton("Salvar");
+        btnConsultar = new JButton("Consultar");
 
-        painelCampos.add(btnSalvar);
-        painelCampos.add(btnConsultar);
+        painelBotoes.add(btnSalvar);
+        painelBotoes.add(btnConsultar);
 
-        String[] colunas = {
-                "ID",
-                "Codigo",
-                "Tipo",
-                "Localizacao"
-        };
+        painelPrincipal.add(painelBotoes, BorderLayout.CENTER);
 
-        modeloTabela = new DefaultTableModel(colunas, 0);
+        modeloTabela = new DefaultTableModel();
+
+        modeloTabela.addColumn("ID");
+        modeloTabela.addColumn("Código");
+        modeloTabela.addColumn("Tipo");
+        modeloTabela.addColumn("Localização");
+
         tabela = new JTable(modeloTabela);
 
-        JScrollPane scrollTabela = new JScrollPane(tabela);
-        scrollTabela.setBorder(BorderFactory.createTitledBorder("Sensores Cadastrados"));
+        JScrollPane scrollPane = new JScrollPane(tabela);
+        scrollPane.setPreferredSize(new Dimension(850, 300));
 
-
-        painelPrincipal.add(painelCampos, BorderLayout.NORTH);
-        painelPrincipal.add(scrollTabela, BorderLayout.CENTER);
-        painelPrincipal.add(lblTotal, BorderLayout.SOUTH);
+        painelPrincipal.add(scrollPane, BorderLayout.SOUTH);
 
         add(painelPrincipal, BorderLayout.CENTER);
 
+        btnSalvar.addActionListener(e -> salvarSensor());
 
+        btnConsultar.addActionListener(e -> carregarTabela());
     }
+
     private void salvarSensor() {
-        String id = txtId.getText();
-        String codigo = txtCodigo.getText();
-        String tipo = txtTipo.getText();
-        String localizacao = txtLocalizacao.getText();
 
+        Sensor sensor = new Sensor();
 
-        if (id.isEmpty() || codigo.isEmpty() || tipo.isEmpty()
-                || localizacao.isEmpty()) {
+        sensor.setCodigo(txtCodigo.getText());
+        sensor.setTipo(txtTipo.getText());
+        sensor.setLocalizacao(txtLocalizacao.getText());
 
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
-            return;
-        }
+        sensorController.cadastrarSensor(sensor);
 
-        modeloTabela.addRow(new Object[]{
-                id,
-                codigo,
-                tipo,
-                localizacao
+        JOptionPane.showMessageDialog(this, "Sensor cadastrado com sucesso!");
 
-        });
+        limparCampos();
+        carregarTabela();
     }
 
-    private void ConsultarSensor() {
-        int linhaSelecionada = tabela.getSelectedRow();
+    private void carregarTabela() {
 
-        if (linhaSelecionada == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um sensor na tabela!");
-            return;
+        modeloTabela.setRowCount(0);
+
+        ArrayList<Sensor> lista = sensorController.listarSensores();
+
+        for (Sensor sensor : lista) {
+            modeloTabela.addRow(new Object[]{
+                    sensor.getId(),
+                    sensor.getCodigo(),
+                    sensor.getTipo(),
+                    sensor.getLocalizacao()
+            });
         }
+    }
 
-
-
+    private void limparCampos() {
+        txtId.setText("");
+        txtCodigo.setText("");
+        txtTipo.setText("");
+        txtLocalizacao.setText("");
     }
 }
