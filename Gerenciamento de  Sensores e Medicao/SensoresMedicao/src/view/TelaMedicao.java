@@ -112,13 +112,17 @@ public class TelaMedicao extends JFrame {
     }
 
     private void carregarSensores() {
+        try {
+            comboSensor.removeAllItems();
 
-        comboSensor.removeAllItems();
+            ArrayList<Sensor> sensores = sensorController.consultar();
 
-        ArrayList<Sensor> sensores = sensorController.listarSensores();
+            for (Sensor sensor : sensores) {
+                comboSensor.addItem(sensor);
+            }
 
-        for (Sensor sensor : sensores) {
-            comboSensor.addItem(sensor);
+        } catch (Exception erro) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar sensores: " + erro.getMessage());
         }
     }
 
@@ -156,39 +160,45 @@ public class TelaMedicao extends JFrame {
             medicao.setDataHora(txtDataHora.getText());
             medicao.setSensor(sensorSelecionado);
 
-            medicaoController.cadastrarMedicao(medicao);
+            medicaoController.salvar(medicao);
 
             JOptionPane.showMessageDialog(this, "Medição cadastrada com sucesso!");
 
             limparCampos();
             listarMedicoes();
 
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException erro) {
             JOptionPane.showMessageDialog(this, "Digite um valor numérico válido.");
+        } catch (Exception erro) {
+            JOptionPane.showMessageDialog(this, erro.getMessage());
         }
     }
 
     private void listarMedicoes() {
+        try {
+            modeloTabela.setRowCount(0);
 
-        modeloTabela.setRowCount(0);
+            ArrayList<Medicao> lista = medicaoController.consultar();
 
-        ArrayList<Medicao> lista = medicaoController.listarMedicoes();
+            for (Medicao medicao : lista) {
 
-        for (Medicao medicao : lista) {
+                String sensor = "";
 
-            String sensor = "";
+                if (medicao.getSensor() != null) {
+                    sensor = medicao.getSensor().getCodigo();
+                }
 
-            if (medicao.getSensor() != null) {
-                sensor = medicao.getSensor().getCodigo();
+                modeloTabela.addRow(new Object[]{
+                        medicao.getId(),
+                        medicao.getValor(),
+                        medicao.getUnidade(),
+                        medicao.getDataHora(),
+                        sensor
+                });
             }
 
-            modeloTabela.addRow(new Object[]{
-                    medicao.getId(),
-                    medicao.getValor(),
-                    medicao.getUnidade(),
-                    medicao.getDataHora(),
-                    sensor
-            });
+        } catch (Exception erro) {
+            JOptionPane.showMessageDialog(this, "Erro ao consultar medições: " + erro.getMessage());
         }
     }
 

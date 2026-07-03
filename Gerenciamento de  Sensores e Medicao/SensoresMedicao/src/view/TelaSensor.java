@@ -94,38 +94,59 @@ public class TelaSensor extends JFrame {
 
         btnSalvar.addActionListener(e -> salvarSensor());
 
-        btnConsultar.addActionListener(e -> carregarTabela());
+        btnConsultar.addActionListener(e -> listarSensores());
     }
 
     private void salvarSensor() {
 
-        Sensor sensor = new Sensor();
+        if (txtCodigo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "O campo Código é obrigatório.");
+            return;
+        }
 
-        sensor.setCodigo(txtCodigo.getText());
-        sensor.setTipo(txtTipo.getText());
-        sensor.setLocalizacao(txtLocalizacao.getText());
+        if (txtTipo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "O campo Tipo é obrigatório.");
+            return;
+        }
 
-        sensorController.cadastrarSensor(sensor);
+        if (txtLocalizacao.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "O campo Localização é obrigatório.");
+            return;
+        }
 
-        JOptionPane.showMessageDialog(this, "Sensor cadastrado com sucesso!");
+        try {
+            Sensor sensor = new Sensor();
 
-        limparCampos();
-        carregarTabela();
+            sensor.setCodigo(txtCodigo.getText());
+            sensor.setTipo(txtTipo.getText());
+            sensor.setLocalizacao(txtLocalizacao.getText());
+
+            sensorController.salvar(sensor);
+
+            JOptionPane.showMessageDialog(this, "Sensor cadastrado com sucesso!");
+
+            limparCampos();
+            listarSensores();
+
+        } catch (Exception erro) {
+            JOptionPane.showMessageDialog(this, erro.getMessage());
+        }
     }
+    private void listarSensores() {
+        try {
+            modeloTabela.setRowCount(0);
+            ArrayList<Sensor> lista = sensorController.consultar();
+            for (Sensor sensor : lista) {
+                modeloTabela.addRow(new Object[]{
+                        sensor.getId(),
+                        sensor.getCodigo(),
+                        sensor.getTipo(),
+                        sensor.getLocalizacao()
+                });
+            }
 
-    private void carregarTabela() {
-
-        modeloTabela.setRowCount(0);
-
-        ArrayList<Sensor> lista = sensorController.listarSensores();
-
-        for (Sensor sensor : lista) {
-            modeloTabela.addRow(new Object[]{
-                    sensor.getId(),
-                    sensor.getCodigo(),
-                    sensor.getTipo(),
-                    sensor.getLocalizacao()
-            });
+        } catch (Exception erro) {
+            JOptionPane.showMessageDialog(this, "Erro ao consultar sensores: " + erro.getMessage());
         }
     }
 
